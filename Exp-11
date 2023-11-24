@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <openssl/sha.h>
+
+void printDigestInfo(const unsigned char* digest, size_t size) {
+    printf("SHA1: ");
+    for (size_t i = 0; i < size; i++) {
+        printf("%02x", digest[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    char input[256];
+
+    SHA_CTX shaContext;
+    SHA1_Init(&shaContext);
+
+    // Empty string
+    strcpy(input, "");
+    SHA1_Update(&shaContext, input, strlen(input));
+    unsigned char output[SHA_DIGEST_LENGTH];
+    SHA1_Final(output, &shaContext);
+    printDigestInfo(output, SHA_DIGEST_LENGTH);
+
+    // "abc"
+    strcpy(input, "abc");
+    SHA1_Init(&shaContext);
+    SHA1_Update(&shaContext, input, strlen(input));
+    SHA1_Final(output, &shaContext);
+    printDigestInfo(output, SHA_DIGEST_LENGTH);
+
+    // "abcdefghijklmnopqrstuvwxyz"
+    strcpy(input, "abcdefghijklmnopqrstuvwxyz");
+    SHA1_Init(&shaContext);
+    SHA1_Update(&shaContext, input, strlen(input));
+    SHA1_Final(output, &shaContext);
+    printDigestInfo(output, SHA_DIGEST_LENGTH);
+
+    return 0;
+}
